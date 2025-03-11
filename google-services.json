@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "723921855261",
+    "project_id": "dpl-notification",
+    "storage_bucket": "dpl-notification.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723921855261:android:2c1457abb537adc80d37f4",
+        "android_client_info": {
+          "package_name": "com.vivek5393.tryyourluck"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmWHN8n8yy29u5udLgw6D5GOxy9UNBXn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:723921855261:android:99b9e1add59608a00d37f4",
+        "android_client_info": {
+          "package_name": "com.vivekvaishnani07.dplappfrontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmWHN8n8yy29u5udLgw6D5GOxy9UNBXn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

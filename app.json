@@ -1,0 +1,75 @@
+{
+  "expo": {
+    "name": "DPL11",
+    "slug": "dpl-app-frontend",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo/dpl_foreground.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vivekvaishnani07.dplappfrontend",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/logo/dpl_foreground.png",
+        "backgroundColor": "#df0100"
+      },
+      "package": "com.vivekvaishnani07.dplappfrontend",
+      "googleServicesFile": "./google-services.json",
+      "icon": "./assets/images/logo/dpl11.png",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/logo/web.png"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo/splash-screen-icon.jpg",
+          "resizeMode": "contain",
+          "backgroundColor": "#df0100"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow this app to access your photos to select images.",
+          "cameraPermission": "Allow this app to use your camera to take photos."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo/web.png",
+          "color": "#ffffff",
+          "defaultChannel": "default",
+          "enableBackgroundRemoteNotifications": false
+        }
+      ],
+      "expo-router",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2d98a37e-abee-479c-a2f0-7f82bc131fb6"
+      }
+    }
+  }
+}

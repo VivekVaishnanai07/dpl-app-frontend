@@ -1,0 +1,38 @@
+const Colors: any = {
+  light: {
+    background: '#ddd',
+    secondaryBackground: '#fff',
+    cardBackground: '#fff',
+    cardBoxBackground: '#f8f9fa',
+    greyBackground: '#F5F5F5',
+    text: '#303341',
+    textSecondary: '#fff',
+    icon: '#fff',
+    tabBarBackground: '#fff',
+    tabBarIndicator: '#F44336',
+    headerBackground: '#F8F9FA',
+    tableHeaderBackground: "#f6f6f6",
+    tableHeaderText: "#676767",
+    buttonBackground: '#e0e0e0',
+    border: '#D3D3D3',
+  },
+  dark: {
+    background: '#121212',
+    secondaryBackground: '#383838',
+    cardBackground: '#272727',
+    cardBoxBackground: '#272727',
+    greyBackground: '#0F1216',
+    text: '#ddd',
+    textSecondary: '#ddd',
+    icon: '#fff',
+    tabBarBackground: '#e3e3e3',
+    tabBarIndicator: '#c22014',
+    headerBackground: '#1D3D47',
+    tableHeaderBackground: "#1D1D1D",
+    tableHeaderText: "#ddd",
+    buttonBackground: '#444',
+    border: '#ddd',
+  },
+};
+
+export default Colors;
