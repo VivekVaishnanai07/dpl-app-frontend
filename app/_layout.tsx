@@ -14,6 +14,7 @@ import 'react-native-reanimated';
 
 import CustomHeader from '@/components/CustomHeader';
 import CustomSnackbar from '@/components/CustomSnackbar';
+import NoInternetModal from '@/components/InternetCheck';
 import LoadingScreen from '@/components/LoadingScreen';
 import { NotificationProvider, useNotifications } from '@/context/NotificationContext';
 import { SnackbarProvider } from '@/context/SnackbarContext';
@@ -136,6 +137,7 @@ function RootLayoutInner() {
         <PaperProvider theme={theme === 'dark' ? MD3DarkTheme : MD3LightTheme}>
           <UserProvider>
             <SnackbarProvider>
+              <NoInternetModal />
               <Stack>
                 <Stack.Screen name="login" options={{ headerShown: false }} />
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
