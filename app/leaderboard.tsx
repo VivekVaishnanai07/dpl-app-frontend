@@ -8,16 +8,6 @@ import { Dimensions, FlatList, Image, ImageBackground, SafeAreaView, StyleSheet,
 
 const { width, height } = Dimensions.get("window");
 
-const leaderboardData = [
-  { id: "1", name: "Jennifer", points: 780, rank: "04", change: "+3", avatar: "https://avatar.iran.liara.run/public/1" },
-  { id: "2", name: "William", points: 756, rank: "05", change: "-1", avatar: "https://avatar.iran.liara.run/public/2" },
-  { id: "3", name: "Samantha", points: 698, rank: "06", change: "-2", avatar: "https://avatar.iran.liara.run/public/3", highlighted: true },
-  { id: "4", name: "Emery", points: 636, rank: "07", change: "-1", avatar: "https://avatar.iran.liara.run/public/4" },
-  { id: "5", name: "Lydia", points: 560, rank: "08", change: "-1", avatar: "https://avatar.iran.liara.run/public/5" },
-  { id: "6", name: "Lydia", points: 560, rank: "09", change: "-1", avatar: "https://avatar.iran.liara.run/public/5" },
-  { id: "7", name: "Lydia", points: 560, rank: "10", change: "-1", avatar: "https://avatar.iran.liara.run/public/5" },
-];
-
 type Player = {
   id: string;
   avatar: string;
@@ -97,7 +87,7 @@ const LeaderboardScreen = () => {
       <View style={styles.leaderboardContainer}>
         <FlatList
           data={leaderboardList}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }: any) => (
             <View style={styles.listItemContainer}>
               <Text style={styles.rank}>{item.current_rank}</Text>

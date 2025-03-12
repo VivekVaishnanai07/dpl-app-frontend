@@ -1,10 +1,16 @@
 import useCountdownTimer from "@/hooks/useCountdownTimer";
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 
-const CountdownTimer = React.memo(({ date }: any) => {
+const CountdownTimer = React.memo(({ date, onComplete }: any) => {
   const { days, hours, minutes, seconds } = useCountdownTimer(date);
+
+  useEffect(() => {
+    if (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0) {
+      onComplete?.();
+    }
+  }, [days, hours, minutes, seconds]);
 
   return (
     <View style={styles.timeBox}>
@@ -34,6 +40,6 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-SemiBold",
     color: "#E60012",
   },
-})
+});
 
 export default CountdownTimer;

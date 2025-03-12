@@ -14,8 +14,8 @@ import 'react-native-reanimated';
 
 import CustomHeader from '@/components/CustomHeader';
 import CustomSnackbar from '@/components/CustomSnackbar';
-import NoInternetModal from '@/components/InternetCheck';
 import LoadingScreen from '@/components/LoadingScreen';
+import NoInternetModal from '@/components/NoInternetModal';
 import { NotificationProvider, useNotifications } from '@/context/NotificationContext';
 import { SnackbarProvider } from '@/context/SnackbarContext';
 import { ThemeProvider, useTheme } from '@/context/ThemeContext';
@@ -101,6 +101,11 @@ function RootLayoutInner() {
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
       console.log('Notification received:', notification);
+      if (notification && notification.request && notification.request.content) {
+        console.log('Notification title:', notification.request.content.title);
+        console.log('Notification Body:', notification.request.content.body);
+        console.log('Notification Data:', notification.request.content.data);
+      }
       if (notification.date) {
         fetchNotifications();
       }

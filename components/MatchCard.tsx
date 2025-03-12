@@ -3,7 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { Entypo } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Menu, Text } from "react-native-paper";
 import Animated, { FadeInUp, FadeOutDown } from "react-native-reanimated";
@@ -13,13 +13,19 @@ const MatchCard = ({ match }: any) => {
   const { theme } = useTheme();
   const navigation = useNavigation<any>();
   const [visible, setVisible] = useState(false);
+  const [isMatchFinished, setIsMatchFinished] = useState(dayjs(match.date).isBefore(dayjs()));
 
-  const openMenu = () => {
-    setVisible(true);
-  };
+  useEffect(() => {
+    setIsMatchFinished(dayjs(match.date).isBefore(dayjs()));
+  }, [match.date]);
 
+  const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
-  const isMatchFinished = dayjs(match.date).isBefore(dayjs());
+
+  const handleCountdownComplete = () => {
+    console.log("Countdown finished!");
+    setIsMatchFinished(true);
+  };
 
   return (
     <Animated.View
@@ -30,17 +36,11 @@ const MatchCard = ({ match }: any) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={[styles.headerText, { color: Colors[theme].text }]}>{match.match_status} Match</Text>
-        {(match.match_status !== "Finished" || !isMatchFinished) && (
+        {(match.match_status !== "Finished" && !isMatchFinished) && (
           <Menu
             visible={visible}
             onDismiss={closeMenu}
-            contentStyle={{
-              backgroundColor: "#f2f2f2",
-              width: 120,
-              paddingVertical: 2,
-              borderRadius: 10,
-              zIndex: 100
-            }}
+            contentStyle={styles.menuContent}
             anchor={
               <Entypo
                 name="dots-three-horizontal"
@@ -53,7 +53,7 @@ const MatchCard = ({ match }: any) => {
             <Menu.Item
               onPress={() => {
                 navigation.navigate("prediction", { id: match.id });
-                setVisible(false);
+                closeMenu();
               }}
               title="Prediction"
               titleStyle={{ color: "#000" }}
@@ -80,14 +80,14 @@ const MatchCard = ({ match }: any) => {
       </View>
 
       {/* Timer or View All */}
-      {match.match_status === 'Finished' || isMatchFinished ? (
+      {isMatchFinished ? (
         <TouchableOpacity style={styles.viewAllButton} onPress={() => navigation.navigate("prediction", { id: match.id })}>
           <Text style={styles.viewAllText}>View All</Text>
         </TouchableOpacity>
       ) : (
-        <CountdownTimer date={match.date} />
+        <CountdownTimer date={match.date} onComplete={handleCountdownComplete} />
       )}
-    </Animated.View >
+    </Animated.View>
   );
 };
 
@@ -113,6 +113,13 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 16,
     fontFamily: "Poppins-SemiBold",
+  },
+  menuContent: {
+    backgroundColor: "#f2f2f2",
+    width: 120,
+    paddingVertical: 2,
+    borderRadius: 10,
+    zIndex: 100,
   },
   teams: {
     flexDirection: "row",

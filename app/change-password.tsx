@@ -120,6 +120,7 @@ const ChangePasswordScreen = () => {
             secureTextEntry={secureEntryConfirm}
             mode="outlined"
             outlineStyle={styles.inputOutline}
+            contentStyle={styles.inputContent}
             left={<TextInput.Icon icon="lock" />}
             right={
               <TextInput.Icon
@@ -178,7 +179,7 @@ const styles = StyleSheet.create({
   labelText: { fontSize: 15, fontFamily: "Poppins-Regular", alignSelf: "flex-start", paddingLeft: 8 },
   input: { width: "100%", marginBottom: 15, height: 55, backgroundColor: "#fff" },
   inputOutline: { borderRadius: 24, borderColor: "#fff" },
-  inputContent: { fontSize: 18 },
+  inputContent: { fontSize: 18, color: "#000", fontFamily: "Poppins-Regular", },
   dividerLine: { marginVertical: 20, width: "100%" },
   warningContainer: { marginBottom: 15 },
   warningText: { textAlign: "center", fontFamily: "Poppins-Light", fontSize: 13 },
