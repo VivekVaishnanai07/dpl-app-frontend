@@ -8,7 +8,6 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
   Dimensions,
   Image,
   ImageBackground,
@@ -42,32 +41,18 @@ interface Last7Match {
   date: string;
 }
 
-interface UserProfileDetails {
-  full_name: string;
-  userImg?: string;
-  user_level: number;
-  total_points: number;
-  total_matches: number;
-  best_streak: number;
-  win_matches: number;
-  lose_matches: number;
-  accuracy: number;
-  level_completion_percentage: number;
-  last_7_matches?: Last7Match[];
-}
-
 const ProfileScreen: React.FC = () => {
   const { theme } = useTheme();
   const { user } = useUser();
   const { showSnackbar } = useSnackbar();
-  const [userDetails, setUserDetails] = useState<UserProfileDetails | null>(null);
+  const [userDetails, setUserDetails] = useState<any>(null);
   const navigation = useNavigation<any>();
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
         try {
-          const response: UserProfileDetails = await viewProfileUserDetails(user.id);
+          const response = await viewProfileUserDetails(user.id);
           // If your API returns last_7_matches as a JSON string, uncomment the next line:
           // response.last_7_matches = JSON.parse(response.last_7_matches);
           setUserDetails(response);
@@ -79,140 +64,138 @@ const ProfileScreen: React.FC = () => {
     fetchData();
   }, [user]);
 
-  if (!userDetails) {
-    return (
-      <View style={[styles.container, { justifyContent: "center", alignItems: "center" }]}>
-        <ActivityIndicator size="large" color={Colors[theme].primary} />
-      </View>
-    );
-  }
-
   return (
     <View style={[styles.container, { backgroundColor: Colors[theme].greyBackground }]}>
       {/* Background with Gradient Overlay */}
-      <ImageBackground
-        source={require("../assets/images/day.jpg")}
-        style={styles.topSection}
-      >
-        <LinearGradient colors={["rgba(0,0,0,0.4)", "transparent"]} style={styles.gradient} />
-        <View style={{ position: "absolute", top: 40, left: 30 }}>
-          <FontAwesome name="mail-reply" size={24} color="white" onPress={() => navigation.goBack()} />
-        </View>
-        <View style={styles.profileContainer}>
-          <AnimatedCircularProgress
-            size={width * 0.33}
-            width={6}
-            fill={Number(userDetails.level_completion_percentage)}
-            tintColor={Colors[theme].tabBarIndicator}
-            backgroundColor="#eee"
-            rotation={0}
-            lineCap="round"
-          >
-            {() => (
-              <Image
-                source={{ uri: userDetails.userImg || "https://via.placeholder.com/100" }}
-                style={styles.avatar}
-              />
-            )}
-          </AnimatedCircularProgress>
-        </View>
-      </ImageBackground>
-      <View style={[styles.middleSection, { backgroundColor: Colors[theme].secondaryBackground }]}>
-        <Text style={{ fontFamily: "Poppins-SemiBold", alignSelf: "center", fontSize: 18, paddingBottom: 8, color: Colors[theme].text }}>
-          {userDetails.full_name}
-        </Text>
-        <View style={[styles.statsContainer, { marginBottom: 10, width: "90%", paddingVertical: 4, alignSelf: "center", backgroundColor: Colors[theme].cardBoxBackground }]}>
-          <StatBox label="Level" value={userDetails.user_level} theme={theme} showBorder />
-          <StatBox label="Points" value={userDetails.total_points} theme={theme} showBorder />
-          <StatBox label="Streak" value={userDetails.best_streak} theme={theme} />
-        </View>
-        <View style={[styles.statsContainer, { backgroundColor: Colors[theme].cardBoxBackground }]}>
-          <StatBox label="Matches" value={userDetails.total_matches} theme={theme} showBorder />
-          <StatBox label="Win" value={userDetails.win_matches} theme={theme} showBorder />
-          <StatBox label="Lose" value={userDetails.lose_matches} theme={theme} showBorder />
-          <StatBox label="Accuracy" value={`${userDetails.accuracy}%`} theme={theme} />
-        </View>
-        <View style={{ marginTop: 16 }}>
-          <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", paddingVertical: 10, color: Colors[theme].text }}>Last 7 Predictions</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
-            {userDetails.last_7_matches && Array.isArray(userDetails.last_7_matches) ? (
-              userDetails.last_7_matches.map((match, index) => (
-                <View
-                  key={index + 1}
-                  style={{
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderColor: match.result === "W" ? "#2a841b" : "#d34646",
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    width: 40,
-                    height: 40
-                  }}
+      {
+        userDetails && (
+          <>
+            <ImageBackground
+              source={require("../assets/images/day.jpg")}
+              style={styles.topSection}
+            >
+              <LinearGradient colors={["rgba(0,0,0,0.4)", "transparent"]} style={styles.gradient} />
+              <View style={{ position: "absolute", top: 40, left: 30 }}>
+                <FontAwesome name="mail-reply" size={24} color="white" onPress={() => navigation.goBack()} />
+              </View>
+              <View style={styles.profileContainer}>
+                <AnimatedCircularProgress
+                  size={width * 0.33}
+                  width={6}
+                  fill={Number(userDetails.level_completion_percentage)}
+                  tintColor={Colors[theme].tabBarIndicator}
+                  backgroundColor="#eee"
+                  rotation={0}
+                  lineCap="round"
                 >
-                  <Text
-                    style={{
-                      fontFamily: "Poppins-SemiBold",
-                      fontSize: 18,
-                      color: match.result === "W" ? "#2a841b" : "#d34646",
-                    }}
-                  >
-                    {match.result}
-                  </Text>
+                  {() => (
+                    <Image
+                      source={{ uri: userDetails.userImg || "https://via.placeholder.com/100" }}
+                      style={styles.avatar}
+                    />
+                  )}
+                </AnimatedCircularProgress>
+              </View>
+            </ImageBackground>
+            <View style={[styles.middleSection, { backgroundColor: Colors[theme].secondaryBackground }]}>
+              <Text style={{ fontFamily: "Poppins-SemiBold", alignSelf: "center", fontSize: 18, paddingBottom: 8, color: Colors[theme].text }}>
+                {userDetails.full_name}
+              </Text>
+              <View style={[styles.statsContainer, { marginBottom: 10, width: "90%", paddingVertical: 4, alignSelf: "center", backgroundColor: Colors[theme].cardBoxBackground }]}>
+                <StatBox label="Level" value={userDetails.user_level} theme={theme} showBorder />
+                <StatBox label="Points" value={userDetails.total_points} theme={theme} showBorder />
+                <StatBox label="Streak" value={userDetails.best_streak} theme={theme} />
+              </View>
+              <View style={[styles.statsContainer, { backgroundColor: Colors[theme].cardBoxBackground }]}>
+                <StatBox label="Matches" value={userDetails.total_matches} theme={theme} showBorder />
+                <StatBox label="Win" value={userDetails.win_matches} theme={theme} showBorder />
+                <StatBox label="Lose" value={userDetails.lose_matches} theme={theme} showBorder />
+                <StatBox label="Accuracy" value={`${Math.floor(userDetails.accuracy)}%`} theme={theme} />
+              </View>
+              <View style={{ marginTop: 16 }}>
+                <Text style={{ fontSize: 16, fontFamily: "Poppins-Medium", paddingVertical: 10, color: Colors[theme].text }}>Last 7 Predictions</Text>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" }}>
+                  {userDetails.last_7_matches && Array.isArray(userDetails.last_7_matches) ? (
+                    userDetails.last_7_matches.map((match: any, index: any) => (
+                      <View
+                        key={index + 1}
+                        style={{
+                          alignItems: "center",
+                          justifyContent: "center",
+                          borderColor: theme === "light" ? match.result === "W" ? "#2a841b" : "#d34646" : "#fff",
+                          borderWidth: 1,
+                          borderRadius: 20,
+                          width: 40,
+                          height: 40
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontFamily: "Poppins-SemiBold",
+                            fontSize: 18,
+                            color: theme === "light" ? match.result === "W" ? "#2a841b" : "#d34646" : "#fff",
+                          }}
+                        >
+                          {match.result}
+                        </Text>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14 }}>No predictions available</Text>
+                  )}
                 </View>
-              ))
-            ) : (
-              <Text style={{ fontFamily: "Poppins-Medium", fontSize: 14 }}>No predictions available</Text>
-            )}
-          </View>
-        </View>
-      </View>
-      <ScrollView>
-        {/* Menu Items */}
-        <View style={styles.bottomSection}>
-          <List.Item
-            title="Leaderboard"
-            titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
-            left={() => (
-              <MaterialIcons
-                name="leaderboard"
-                size={22}
-                color="#fff"
-                style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
-              />
-            )}
-            style={[styles.menuItem, styles.bottomBorder]}
-            onPress={() => navigation.navigate("leaderboard")}
-          />
-          <List.Item
-            title="Matches"
-            titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
-            left={() => (
-              <Entypo
-                name="list"
-                size={22}
-                color="#fff"
-                style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
-              />
-            )}
-            style={[styles.menuItem, styles.bottomBorder]}
-            onPress={() => navigation.navigate("matches")}
-          />
-          <List.Item
-            title="Head To Head"
-            titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
-            left={() => (
-              <MaterialIcons
-                name="compare"
-                size={22}
-                color="#fff"
-                style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
-              />
-            )}
-            style={styles.menuItem}
-            onPress={() => showSnackbar("This feature is coming soon.")}
-          />
-        </View>
-      </ScrollView>
+              </View>
+            </View>
+            <ScrollView>
+              {/* Menu Items */}
+              <View style={styles.bottomSection}>
+                <List.Item
+                  title="Leaderboard"
+                  titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
+                  left={() => (
+                    <MaterialIcons
+                      name="leaderboard"
+                      size={22}
+                      color="#fff"
+                      style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
+                    />
+                  )}
+                  style={[styles.menuItem, styles.bottomBorder]}
+                  onPress={() => navigation.navigate("leaderboard")}
+                />
+                <List.Item
+                  title="Matches"
+                  titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
+                  left={() => (
+                    <Entypo
+                      name="list"
+                      size={22}
+                      color="#fff"
+                      style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
+                    />
+                  )}
+                  style={[styles.menuItem, styles.bottomBorder]}
+                  onPress={() => navigation.navigate("matches")}
+                />
+                <List.Item
+                  title="Head To Head"
+                  titleStyle={{ fontSize: 15, fontFamily: "Poppins-Medium" }}
+                  left={() => (
+                    <MaterialIcons
+                      name="compare"
+                      size={22}
+                      color="#fff"
+                      style={[styles.iconContainer, { backgroundColor: Colors[theme].tabBarIndicator }]}
+                    />
+                  )}
+                  style={styles.menuItem}
+                  onPress={() => showSnackbar("This feature is coming soon.")}
+                />
+              </View>
+            </ScrollView>
+          </>
+        )
+      }
     </View>
   );
 };

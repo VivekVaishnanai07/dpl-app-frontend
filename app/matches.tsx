@@ -3,7 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { getMatchesList } from "@/services/matcheService";
 import { decodeJWT } from "@/services/tokenService";
 import { useEffect, useState } from "react";
-import { Dimensions, Image, StyleSheet, View, FlatList } from "react-native";
+import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 import { SegmentedButtons, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -87,11 +87,11 @@ const MatchesScreen = () => {
               <View style={[styles.listItem, { backgroundColor: Colors[theme].secondaryBackground }]}>
                 <View style={styles.itemTopSection}>
                   <Image source={{ uri: item.team1_icon }} style={styles.teamImg} resizeMode="contain" />
-                  <Image source={require("../assets/images/vs5.png")} style={styles.vsImg} resizeMode="contain" />
+                  <Image source={theme === "light" ? require("../assets/images/vs5.png") : require("../assets/images/vs2.png")} style={styles.vsImg} resizeMode="contain" />
                   <Image source={{ uri: item.team2_icon }} style={styles.teamImg} resizeMode="contain" />
                 </View>
                 <View style={styles.statusContainer}>
-                  <Text style={[styles.statusText, item.win_team ? styles.WonStatusColor : styles.notDeclaredStatusColor]}>
+                  <Text style={[styles.statusText, theme === "light" ? (item.win_team ? styles.WonStatusColor : styles.notDeclaredStatusColor) : { color: "#fff" }]}>
                     {checkWinnerTeam(item.win_team)}
                   </Text>
                 </View>
@@ -99,32 +99,33 @@ const MatchesScreen = () => {
             </View>
           )}
           contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={
+            <View style={[styles.emptyContainer, { backgroundColor: Colors[theme].secondaryBackground }]}>
+              <Text style={styles.emptyText}>No matches found</Text>
+            </View>
+          }
         />
       </View>
-    </View>
+    </View >
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-
   innerContainer: {
     flex: 1,
     borderTopLeftRadius: 40,
     borderTopRightRadius: 40,
     paddingBottom: 10,
   },
-
   segmentSection: {
     alignSelf: "center",
     marginTop: 10,
   },
-
   labelFont: {
     fontFamily: "Poppins-Regular",
     fontSize: 15,
   },
-
   cardContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -133,13 +134,11 @@ const styles = StyleSheet.create({
     marginTop: 14,
     flexWrap: "wrap",
   },
-
   matchNum: {
     fontSize: 24,
     fontFamily: "Poppins-SemiBold",
     paddingRight: 4,
   },
-
   listItem: {
     padding: 12,
     marginVertical: 5,
@@ -153,7 +152,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-
   itemTopSection: {
     width: "100%",
     flexDirection: "row",
@@ -164,18 +162,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 8,
   },
-
   teamImg: {
     height: width * 0.12,
     width: width * 0.12,
   },
-
   vsImg: {
     height: width * 0.10,
     width: width * 0.18,
     marginTop: 8,
   },
-
   statusContainer: {
     alignSelf: "center",
     paddingTop: 10,
@@ -190,6 +185,17 @@ const styles = StyleSheet.create({
   WonStatusColor: {
     color: "green",
   },
+  emptyContainer: {
+    padding: 14,
+    borderRadius: 16,
+    marginHorizontal: 20,
+    marginTop: 20
+  },
+  emptyText: {
+    fontSize: 16,
+    fontFamily: "Poppins-Regular",
+    alignSelf: "center"
+  }
 });
 
 export default MatchesScreen;

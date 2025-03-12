@@ -1,3 +1,5 @@
+import Colors from "@/constants/Colors";
+import { useTheme } from "@/context/ThemeContext";
 import { getPointsPlayerBoard } from "@/services/playerBoardService";
 import { decodeJWT } from "@/services/tokenService";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -5,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Tooltip } from "react-native-paper";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,7 +24,8 @@ type Player = {
 };
 
 const LeaderboardScreen = () => {
-  const navigation = useNavigation();
+  const { theme } = useTheme();
+  const navigation = useNavigation<any>();
   const [leaderboardList, setLeaderboardList] = useState<Player[] | null>(null);
   const [topThreeData, setTopThreeData] = useState<Player[] | null>(null);
   const [user, setUser] = useState<any>(null);
@@ -39,6 +43,7 @@ const LeaderboardScreen = () => {
           setTopThreeData(topThree);
         } catch (error) {
           console.error("Error fetching profile details", error);
+          navigation.navigate("view-profile");
         }
       }
     };
@@ -61,42 +66,48 @@ const LeaderboardScreen = () => {
           <View style={styles.podiumContainer}>
             <View style={{ alignItems: "center" }}>
               <Image source={{ uri: topThreeData[1].userImg }} style={styles.podiumAvatar} />
-              <View style={[styles.podium, styles.secondPlace]}>
-                <Text style={styles.podiumRank}>2</Text>
-              </View>
+              <Tooltip title={`${topThreeData[1].total_points}`} >
+                <View style={[styles.podium, styles.secondPlace]}>
+                  <Text style={styles.podiumRank}>2</Text>
+                </View>
+              </Tooltip>
             </View>
             <View style={{ alignItems: "center" }}>
               <Image source={{ uri: topThreeData[0].userImg }} style={styles.podiumAvatar} />
               <View style={{ position: "absolute", top: -33 }}>
                 <Image source={require("../assets/images/crown.png")} style={{ height: 40, width: 70 }} />
               </View>
-              <View style={[styles.podium, styles.firstPlace]}>
-                <Text style={styles.podiumRank}>1</Text>
-              </View>
+              <Tooltip title={`${topThreeData[0].total_points}`} >
+                <View style={[styles.podium, styles.firstPlace]}>
+                  <Text style={styles.podiumRank}>1</Text>
+                </View>
+              </Tooltip>
             </View>
             <View style={{ alignItems: "center" }}>
               <Image source={{ uri: topThreeData[2].userImg }} style={styles.podiumAvatar} />
-              <View style={[styles.podium, styles.thirdPlace]}>
-                <Text style={styles.podiumRank}>3</Text>
-              </View>
+              <Tooltip title={`${topThreeData[2].total_points}`} >
+                <View style={[styles.podium, styles.thirdPlace]}>
+                  <Text style={styles.podiumRank}>3</Text>
+                </View>
+              </Tooltip>
             </View>
           </View>
         )}
       </ImageBackground>
 
-      <View style={styles.leaderboardContainer}>
+      <View style={[styles.leaderboardContainer, { backgroundColor: Colors[theme].greyBackground }]}>
         <FlatList
           data={leaderboardList}
           keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           renderItem={({ item }: any) => (
             <View style={styles.listItemContainer}>
-              <Text style={styles.rank}>{item.current_rank}</Text>
-              <View style={[styles.listItem, item.user_id === user.id && styles.highlightedItem]}>
+              <Text style={[styles.rank, { color: Colors[theme].text }]}>{item.current_rank}</Text>
+              <View style={[styles.listItem, { backgroundColor: Colors[theme].cardBackground }, item.user_id === user.id && styles.highlightedItem]}>
                 <View style={styles.userInfo}>
                   <Image source={{ uri: item.userImg }} style={styles.listAvatar} />
                   <View>
-                    <Text style={styles.name}>{item.full_name}</Text>
-                    <Text style={styles.points}>{item.total_points} pts</Text>
+                    <Text style={[styles.name, { color: Colors[theme].text }]}>{item.full_name}</Text>
+                    <Text style={[styles.points, { color: Colors[theme].text }]}>{item.total_points} pts</Text>
                   </View>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", width: 55 }}>
@@ -123,7 +134,7 @@ const LeaderboardScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
@@ -189,7 +200,7 @@ const styles = StyleSheet.create({
   podiumAvatar: {
     width: 60,
     height: 60,
-    borderRadius: width * 0.06,
+    borderRadius: width * 0.09,
     marginBottom: 10
   },
   podiumRank: {
