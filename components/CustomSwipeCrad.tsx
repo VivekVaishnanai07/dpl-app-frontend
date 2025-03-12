@@ -128,7 +128,7 @@ const SwipeCard = ({ item, onDelete, onMarkAsRead }: any) => {
                 <Text style={[styles.date, { color: Colors[theme].text }]}>{dayjs(item.date).format("MMM DD, YYYY")}</Text>
               </View>
               <Text style={[styles.dec, { color: Colors[theme].text }]}>
-                {item.dec}
+                {item.description}
               </Text>
             </View>
           </View>

@@ -47,7 +47,9 @@ const LoginScreen = () => {
       const data = await authenticate(email, password, userPushToken);
 
       if (data?.token) {
-        navigation.navigate('(tabs)');
+        setTimeout(() => {
+          navigation.navigate('(tabs)');
+        }, 100)
         showSnackbar("Login Successful");
         fetchUserData();
       } else {
