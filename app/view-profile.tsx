@@ -122,9 +122,10 @@ const ProfileScreen: React.FC = () => {
                         style={{
                           alignItems: "center",
                           justifyContent: "center",
-                          borderColor: theme === "light" ? match.result === "W" ? "#2a841b" : "#d34646" : "#fff",
+                          borderColor: theme === "light" ? (match.result === "W" ? "#2a841b" : "#d34646") : "#fff",
                           borderWidth: 1,
                           borderRadius: 20,
+                          paddingVertical: 6,
                           width: 40,
                           height: 40
                         }}
@@ -133,7 +134,7 @@ const ProfileScreen: React.FC = () => {
                           style={{
                             fontFamily: "Poppins-SemiBold",
                             fontSize: 18,
-                            color: theme === "light" ? match.result === "W" ? "#2a841b" : "#d34646" : "#fff",
+                            color: theme === "light" ? (match.result === "W" ? "#2a841b" : "#d34646") : "#fff",
                           }}
                         >
                           {match.result}

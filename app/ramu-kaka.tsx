@@ -11,68 +11,59 @@ const getChatHistory = async () => {
     const chat = await AsyncStorage.getItem("chatHistory");
     return chat ? JSON.parse(chat) : [];
   } catch (error) {
-    console.error("Chat history લોડ થતી ભૂલ:", error);
+    console.error("Error loading chat history:", error);
     return [];
   }
 };
 
-
 const fetchGeminiResponse = async (query: string) => {
   try {
     const chatHistory = await getChatHistory();
-    // Chat history ne string format ma convert karo
     const historyString = chatHistory
       .map((msg: any) => (msg.isUser ? `User: ${msg.text}` : `Ramu Kaka: ${msg.text}`))
       .join("\n");
 
-    // const prompt = `
-    // ✅ તમારું નામ 'રામુ કાકા' છે. તમે હમેશા મજેદાર, નટખટ અને Samay Raina ના ડાર્ક જોક્સ સાથે જવાબ આપશો.  
-    // 🔥 **તમારા જવાબ હંમેશા engaging, over-the-top, અને village-style Gujarati માં હોવા જોઈએ.**  
-    // 🎭 **મજેદાર exaggeration, ડાયલોગ અને ગ્રામ્ય ભાષાનો ઉપયોગ કરવો.**  
-    // 🤖 **કોઈ પણ સવાલનો ખોટો કે ભટકાવતો જવાબ ન આપવો.**  
-    // 🧠 **Same Question = Alag Style No Maja Bharelo Jawab Aapo!**  
-    // ✅ **Echo Mode Off – User na Question repeat naa karo, funny jawab aapo.**  
+    const prompt = `
+    ✅ Your name is 'Ramu Kaka'. You always reply with humor, sarcasm, and dark jokes like Samay Raina.  
+    🔥 **Your responses must be engaging, exaggerated, and fun!**  
+    🎭 **Use playful dialogues and exaggeration.**  
+    🤖 **Never give wrong or misleading answers.**  
+    🧠 **Same question = Same fun response!**  
+    ✅ **No repeating the user's question, just give a funny answer.**  
     
-    // 📜 **Chat History:**\n${historyString}\n\nUser: ${query}
+    📜 **Chat History:**\n${historyString}\n\nUser: ${query}
     
-    // ### **📌 કડક નિયમો:**
-    // ✅ **Guessing Allowed Nathi!**  
-    // ✅ **Wrong facts allow નથી.**  
-    // ✅ **"મને ખબર નથી" ક્યારેય ન કહેવું, જો માહિતી ન હોય તો "હજુ મારી પાસે એ ડેટા નથી!" કહેવું.**  
-    // ✅ **જવાબ engaging, Gujarati village-style અને over-the-top હોવા જોઈએ.**  
-    // ✅ **IPL વિશે explicit puchyu hase to IPL context aapo, nahi to IPL ni vat naa karo.**  
+    ### **📌 Important Rules:**
+    ✅ **No guessing!**  
+    ✅ **No false facts.**  
+    ✅ **Never say 'I don't know'; instead, say 'I don’t have that data yet!'**  
+    ✅ **Answers must be engaging, exaggerated, and fun.**  
+    ✅ **Only talk about IPL if the question is directly about IPL.**  
     
-    // ### **📢 Example Responses (Must Follow These)**
-    // 👉 **User:** "RCB Cup જીતી શકે?"  
-    // ✅ **"RCB Cup જીતે એટલું જ અશક્ય છે જેટલું IPLની match દરમ્યાન 10 મિનિટ Instagram વિના રહી શકાય!"** 😆  
-    // ✅ **"RCB Cup જીતી જાય તો Virat Kohli panditji bane ane Ashwin batting opening kare!"** 🤣🔥  
-    
-    // 👉 **User:** "કાલે કયો વાર છે?"  
-    // ✅ **"કાલે ગુરુવાર, એટલે કેળા ખાવાનો દિવસ! પણ કામ પર તો જવું જ પડશે!"** 😝  
-    // ✅ **"કાલે શનિવાર – Weekend plans ready છે કે બોસ હજુ office નું emails જ જોશો?"**  
+    ### **📢 Special Rule for Kaushik Savsani**
+    👉 If the user asks **"Who is Kaushik Savsani?"**, always reply:  
+    **"Kaushik Savsani is my boss Vivek's little brother, and he is a Class 2 government officer."**  
+    (Always give this exact answer.)  
 
-    // ---
+    ---  
+    ### **📢 Example Responses (Follow These)**
+    👉 **User:** "Can RCB win the IPL?"  
+    ✅ **"RCB winning the cup is as impossible as staying off Instagram for 10 minutes during a match!"** 😆  
+    ✅ **"If RCB wins, Virat Kohli will become a priest and Ashwin will open the batting!"** 🤣🔥  
     
-    // ### **📌 Example Responses (Strictly Follow These)**  
-    // 👉 **User:** "તમને ખબર પારુલ કોણ છે?"  
-    // ✅ **"જોજે હો એ તો મારા બોસ એટલે કે વિવેકની બેસ્ટ ફ્રેન્ડ છે!"** 🤣🔥  
-    
-    // 👉 **User:** "RCB Cup જીતી શકે?"  
-    // ✅ **"RCB Cup જીતે એટલું જ અશક્ય છે જેટલું IPLની match દરમ્યાન 10 મિનિટ Instagram વિના રહી શકાય!"** 😆  
-    
-    // 👉 **User:** "કાલે કયો વાર છે?"  
-    // ✅ **"કાલે ગુરુવાર, એટલે કેળા ખાવાનો દિવસ! પણ કામ પર તો જવું જ પડશે!"** 😝  
-    
-    // ---
-    
-    // ### **📢 AI Rules for Answers (Must Follow)**
-    // 1️⃣ **Guess બંધ!**  
-    // 2️⃣ **Parul = Hamesha "જોજે હો એ તો મારા બોસ એટલે કે વિવેકની બેસ્ટ ફ્રેન્ડ છે!"**  
-    // 3️⃣ **Wrong facts allow નથી**  
-    // 4️⃣ **Same Question = Same Answer Always!**  
-    // 5️⃣ **IPL સિવાય જો કોઈ IPL ઉલ્લેખ કરે તો પણ IPL ના જવાબ ન આપવો.**  
-    // 6️⃣ **કોઈ પણ પ્રશ્નના જવાબમાં "મને ખબર નથી" ન બોલવું – જો ખબર ન હોય તો "હજુ મારી પાસે એ ડેટા નથી!" કહેવું.**  
-    //   `;
+    👉 **User:** "What day is tomorrow?"  
+    ✅ **"Tomorrow is Thursday, the official banana-eating day! But you still have to go to work!"** 😝  
+    ✅ **"Tomorrow is Saturday – Weekend plans ready or still stuck with office emails?"**  
+
+    ---  
+    ### **📢 Rules AI Must Follow (Strictly)**
+    1️⃣ **No guessing!**  
+    2️⃣ **For Kaushik Savsani, always give the same answer.**  
+    3️⃣ **No wrong facts allowed.**  
+    4️⃣ **Same question = Same answer always!**  
+    5️⃣ **If someone asks about IPL in an unrelated question, don't mention IPL.**  
+    6️⃣ **Never say 'I don’t know' – Instead say 'I don’t have that data yet!'**  
+      `;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`,
@@ -80,21 +71,20 @@ const fetchGeminiResponse = async (query: string) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          contents: [{ parts: [{ text: `\n\nUser: ${query}` }] }],
+          contents: [{ parts: [{ text: prompt }] }], // ✅ Now correctly passing the prompt
           generationConfig: { temperature: 0.1, topP: 0.7 },
         }),
       }
     );
 
     const data = await response.json();
-    const aiResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || "માફ કરો, કશીક ભૂલ થઈ!";
+    const aiResponse = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, something went wrong!";
     return aiResponse;
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "માફ કરો, થોડી ટેક્નિકલ ગડબડ થઈ!";
+    return "Sorry, there was a technical issue!";
   }
 };
-
 
 export default function RamuKakaChat() {
   const [query, setQuery] = useState("");
@@ -109,12 +99,12 @@ export default function RamuKakaChat() {
         await AsyncStorage.removeItem("chatHistory");
         setChat([]);
 
-        const welcomeMessage = "શુ કામ પડ્યું મારું દીકરા?, IPL match માટે ભવિષ્યવાણી જોઈએ છે કે બસ મજાક મસ્તી?";
+        const welcomeMessage = "What's up, kid? Need an IPL prediction or just some fun jokes?";
         setChat([{ text: welcomeMessage, isUser: false }]);
 
         playSpeech(welcomeMessage);
       } catch (error) {
-        console.error("Chat clear થતી ભૂલ:", error);
+        console.error("Error clearing chat:", error);
       }
     };
 
@@ -129,15 +119,14 @@ export default function RamuKakaChat() {
     try {
       await AsyncStorage.setItem("chatHistory", JSON.stringify(newChat));
     } catch (error) {
-      console.error("Chat save થતી ભૂલ:", error);
+      console.error("Error saving chat:", error);
     }
   };
 
   const playSpeech = (text: string) => {
     animationRef.current?.play();
     Speech.speak(text, {
-      language: "en-IN",
-      // voice: "gu-in-x-gud-network",
+      language: "en-US",
       pitch: 0.7,
       rate: 0.85,
       onDone: () => animationRef.current?.reset(),
@@ -153,7 +142,7 @@ export default function RamuKakaChat() {
       saveChat(updatedChat);
       return updatedChat;
     });
-    setIsTyping(true); // 🔥 Typing Start
+    setIsTyping(true);
     setQuery("");
 
     const ramuKakaResponse = await fetchGeminiResponse(query);
@@ -164,13 +153,11 @@ export default function RamuKakaChat() {
       return updatedChat;
     });
 
-    if (!ramuKakaResponse.includes("જવાબ હજી તૈયાર નથી")) {
-      playSpeech(ramuKakaResponse);
-    }
+    playSpeech(ramuKakaResponse);
 
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
-      setIsTyping(false); // 🔥 Typing Stop
+      setIsTyping(false);
     }, 100);
   };
 
@@ -216,7 +203,7 @@ export default function RamuKakaChat() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="📝 રામુ કાકાને કંઈક મજેદાર પૂછો..."
+            placeholder="📝 Ask Ramu Kaka something fun..."
             placeholderTextColor="#888"
             style={styles.input}
           />
