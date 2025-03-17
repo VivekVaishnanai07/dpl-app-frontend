@@ -25,7 +25,7 @@ const SegmentButtons = ({ matches, setSearchText }: any) => {
               style={styles.tab} // Removed styles.activeTab
               onPress={() => {
                 setSelectedTab(item);
-                setSearchText(null);
+                setSearchText("");
               }}
             >
               <Text style={[[styles.tabText, { color: Colors[theme].text }], selectedTab === item && [styles.activeTabText, { color: Colors[theme].tabBarIndicator }]]}>

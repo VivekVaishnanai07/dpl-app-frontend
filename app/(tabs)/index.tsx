@@ -31,10 +31,14 @@ const Page = () => {
       console.error("Error fetching matches:", error);
     }
   };
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
-    fetchMatches();
-    fetchUserData();
+    if (searchText === "" || searchText.length >= 2) {
+      fetchMatches();
+    }
   }, [searchText]); // When searchText changes, re-fetch
 
   // Called on search input changes
@@ -69,9 +73,9 @@ const Page = () => {
             <View style={[styles.searchSection, { backgroundColor: Colors[theme].greyBackground }]}>
               <TextInput
                 value={searchText}
-                style={styles.searchInput}
+                style={[styles.searchInput, { color: Colors[theme].text }]}
+                placeholderTextColor={Colors[theme].text}
                 placeholder="Search"
-                placeholderTextColor="#999"
                 onChangeText={handleSearchText}
               />
               <TouchableOpacity>
