@@ -2,7 +2,7 @@ import api from "@/api/api";
 
 export const getDashboardMatchesList = async (tournamentId: number, teamName: string | null) => {
   try {
-    const response = await api.post(`/matches/${tournamentId}`, { teamName });
+    const response = await api.post(`/matches/${tournamentId}`, { "teamName": teamName?.length === 0 ? null : teamName });
     return response.data;
   } catch (error: any) {
     console.error("Error fetching match list:", error);
