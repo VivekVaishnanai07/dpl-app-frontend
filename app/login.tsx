@@ -5,7 +5,7 @@ import { useUser } from '@/context/UserContext';
 import { authenticate } from '@/services/tokenService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Button, TextInput } from 'react-native-paper';
@@ -14,12 +14,22 @@ const { width, height } = Dimensions.get('window');
 
 const LoginScreen = () => {
   const { theme } = useTheme();
+  const router = useRouter();
   const { fetchUserData } = useUser();
   const { showSnackbar } = useSnackbar();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
-  const router = useRouter();
+
+  useEffect(() => {
+    const checkToken = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      if (token) {
+        router.replace("/(tabs)"); // Redirect to home screen if token exists
+      }
+    };
+    checkToken();
+  }, []);
 
   const handleSubmit = async () => {
     if (!email.trim() && !password.trim()) {
@@ -45,13 +55,10 @@ const LoginScreen = () => {
       }
 
       const data = await authenticate(email, password, userPushToken);
-
       if (data?.token) {
-        setTimeout(() => {
-          router.replace("/(tabs)");
-        }, 1000)
         showSnackbar("Login Successful");
-        fetchUserData();
+        router.replace("/(tabs)");
+        await fetchUserData();
       } else {
         Alert.alert("Error", data.message || "Invalid email or password");
       }

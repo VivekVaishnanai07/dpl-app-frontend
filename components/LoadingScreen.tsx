@@ -1,4 +1,4 @@
-import { GlobalLoaderConfig } from "@/api/loader-config";
+import { useGlobalLoader } from "@/api/loader-config";
 import Colors from "@/constants/Colors";
 import { useTheme } from "@/context/ThemeContext";
 import React from "react";
@@ -7,9 +7,9 @@ import { ActivityIndicator } from "react-native-paper";
 
 const LoadingScreen = () => {
   const { theme } = useTheme();
-  const [loading] = GlobalLoaderConfig();
+  const isLoading = useGlobalLoader();
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={[styles.container, { backgroundColor: Colors[theme].greyBackground }]}>
         <ActivityIndicator animating={true} size="large" color={Colors[theme].tabBarIndicator} />

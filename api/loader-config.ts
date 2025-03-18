@@ -1,18 +1,15 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import api from "./api";
 
-export const GlobalLoaderConfig = () => {
+export const useGlobalLoader = () => {
   const [counter, setCounter] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const inc = useCallback(() => setCounter((counter: number) => counter + 1), [
-    setCounter
-  ]); // add to counter
-  const dec = useCallback(() => setCounter((counter: number) => counter - 1), [
-    setCounter
-  ]); // remove from counter
+  const inc = useCallback(() => setCounter((c) => c + 1), []);
+  const dec = useCallback(() => setCounter((c) => Math.max(0, c - 1)), []);
 
-  const interceptors: any = useMemo(
-    () => ({
+  const interceptors = useMemo(() => {
+    return {
       request: (config: any) => {
         inc();
         return config;
@@ -21,27 +18,42 @@ export const GlobalLoaderConfig = () => {
         dec();
         return response;
       },
-      error: (error: Error) => {
+      error: (error: any) => {
         dec();
         return Promise.reject(error);
       }
-    }),
-    [inc, dec]
-  ); // create the interceptors
+    };
+  }, [inc, dec]);
 
   useEffect(() => {
-    // add request interceptors
-    api.interceptors.request.use(interceptors.request, interceptors.error);
-    // add response interceptors
-    api.interceptors.response.use(interceptors.response, interceptors.error);
+    const requestInterceptor = api.interceptors.request.use(
+      interceptors.request,
+      interceptors.error
+    );
+    const responseInterceptor = api.interceptors.response.use(
+      interceptors.response,
+      interceptors.error
+    );
+
     return () => {
-      // remove all intercepts when done
-      api.interceptors.request.eject(interceptors.request);
-      api.interceptors.request.eject(interceptors.error);
-      api.interceptors.response.eject(interceptors.response);
-      api.interceptors.response.eject(interceptors.error);
+      api.interceptors.request.eject(requestInterceptor);
+      api.interceptors.response.eject(responseInterceptor);
     };
   }, [interceptors]);
 
-  return [counter > 0];
+  // **Delay before showing the loader**
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (counter > 0) {
+      timer = setTimeout(() => {
+        setIsLoading(true);
+      }, 2000); // **Delay of 500ms**
+    } else {
+      setIsLoading(false);
+    }
+
+    return () => clearTimeout(timer);
+  }, [counter]);
+
+  return isLoading;
 };

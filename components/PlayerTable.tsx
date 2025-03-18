@@ -40,7 +40,7 @@ export default function PlayerTable() {
     <View style={[styles.container, { backgroundColor: Colors[theme].secondaryBackground }]}>
       {/* Table Header */}
       <View style={[styles.header, { backgroundColor: Colors[theme].tableHeaderBackground }]}>
-        <Text style={[styles.headerText, { width: "60%", textAlign: "left", color: Colors[theme].tableHeaderText }]}>Player</Text>
+        <Text style={[styles.headerText, { width: "60%", textAlign: "left", paddingLeft: 10, color: Colors[theme].tableHeaderText }]}>Player</Text>
         <Text style={[styles.headerText, { color: Colors[theme].tableHeaderText }]}>W</Text>
         <Text style={[styles.headerText, { color: Colors[theme].tableHeaderText }]}>L</Text>
         <Text style={[styles.headerText, { color: Colors[theme].tableHeaderText }]}>PM</Text>
@@ -55,8 +55,8 @@ export default function PlayerTable() {
           <View style={styles.row} key={index + 1}>
             {/* Left cell with index, flag image, and team name */}
             <View style={[styles.cell, { width: "60%", flexDirection: "row", alignItems: "center" }]}>
-              <Text style={{ paddingRight: 12, color: Colors[theme].text, fontFamily: "Poppins-Light" }}>{index + 1}.</Text>
-              <Text style={{ fontFamily: "Poppins-SemiBold", paddingLeft: 12, color: Colors[theme].tableHeaderText }}>{item.full_name}</Text>
+              <Text style={{ paddingHorizontal: 12, color: Colors[theme].text, fontFamily: "Poppins-Light", width: "20%" }}>{index + 1}.</Text>
+              <Text style={{ fontFamily: "Poppins-SemiBold", color: Colors[theme].tableHeaderText, textAlign: "left", width: "80%" }}>{item.full_name}</Text>
             </View>
 
             {/* Other cells */}
