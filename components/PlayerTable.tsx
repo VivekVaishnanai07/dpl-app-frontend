@@ -3,7 +3,9 @@ import { useTheme } from "@/context/ThemeContext";
 import { getPlayerBoard } from "@/services/playerBoardService";
 import { decodeJWT } from "@/services/tokenService";
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
+
+const { width, height } = Dimensions.get("window");
 
 export default function PlayerTable() {
   const { theme } = useTheme();
@@ -72,7 +74,7 @@ export default function PlayerTable() {
 
 const styles = StyleSheet.create({
   container: {
-    maxHeight: 480,
+    maxHeight: height * 0.6,
     borderRadius: 35,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },

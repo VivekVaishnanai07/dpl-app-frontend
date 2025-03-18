@@ -4,7 +4,7 @@ import { useTheme } from '@/context/ThemeContext';
 import { useUser } from '@/context/UserContext';
 import { authenticate } from '@/services/tokenService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -19,7 +19,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
-  const navigation = useNavigation<any>();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!email.trim() && !password.trim()) {
@@ -48,8 +48,8 @@ const LoginScreen = () => {
 
       if (data?.token) {
         setTimeout(() => {
-          navigation.navigate('(tabs)');
-        }, 100)
+          router.replace("/(tabs)");
+        }, 1000)
         showSnackbar("Login Successful");
         fetchUserData();
       } else {

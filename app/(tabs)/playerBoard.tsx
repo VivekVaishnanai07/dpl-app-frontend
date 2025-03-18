@@ -1,13 +1,13 @@
 import PlayerTable from '@/components/PlayerTable';
 import Colors from '@/constants/Colors';
 import { useTheme } from '@/context/ThemeContext';
-import { AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useMemo } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 
 export default function LiveMatchScreen() {
   const { theme } = useTheme();
+  const { width, height } = useWindowDimensions();
 
   // Memoize theme-based styles
   const themeStyles = useMemo(() => ({
@@ -21,25 +21,18 @@ export default function LiveMatchScreen() {
 
   return (
     <>
-      <LinearGradient colors={[themeStyles.cardBackground, '#D80032']} style={styles.header}>
-        <View style={styles.headerRow}>
-          <View style={styles.iconWrapper}>
-            <AntDesign name="dingding" size={24} color={themeStyles.icon} />
+      <LinearGradient colors={[themeStyles.cardBackground, '#D80032']} style={[styles.header, { height: height * 0.29 }]}>
+        <View style={styles.centeredView}>
+          <View style={styles.scoreRow}>
+            <TeamCard logo={require("../../assets/images/GT.png")} name="Gujarat Titans" textColor={themeStyles.icon} />
+            <Image source={require("../../assets/images/vs2.png")} style={styles.vsText} />
+            <TeamCard logo={require("../../assets/images/CSK.png")} name="Chennai Super Kings" textColor={themeStyles.icon} />
           </View>
-          <Text style={[styles.liveIndicator, { color: themeStyles.tabBarIndicator, backgroundColor: themeStyles.icon }]}>
-            ● LIVE
-          </Text>
-        </View>
 
-        <View style={styles.scoreRow}>
-          <TeamCard logo={require("../../assets/images/GT.png")} name="Gujarat Titans" textColor={themeStyles.icon} />
-          <Image source={require("../../assets/images/vs2.png")} style={styles.vsText} />
-          <TeamCard logo={require("../../assets/images/CSK.png")} name="Chennai Super Kings" textColor={themeStyles.icon} />
+          <TouchableOpacity style={[styles.liveStatsButton, { backgroundColor: themeStyles.icon }]}>
+            <Text style={[styles.liveStatsText, { color: themeStyles.tabBarIndicator }]}>Live Statistics</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={[styles.liveStatsButton, { backgroundColor: themeStyles.icon }]}>
-          <Text style={[styles.liveStatsText, { color: themeStyles.tabBarIndicator }]}>Live Statistics</Text>
-        </TouchableOpacity>
       </LinearGradient>
 
       <View style={styles.tableSection}>
@@ -56,7 +49,6 @@ export default function LiveMatchScreen() {
   );
 }
 
-// Extracted TeamCard Component to Reduce Code Duplication
 const TeamCard = ({ logo, name, textColor }: any) => (
   <View style={styles.team}>
     <View style={[styles.teamLogoWrapper, { backgroundColor: textColor }]}>
@@ -66,43 +58,29 @@ const TeamCard = ({ logo, name, textColor }: any) => (
   </View>
 );
 
-// Styles
 const styles = StyleSheet.create({
   header: {
-    padding: 16,
+    width: '100%',
+    paddingHorizontal: '5%',
     borderBottomLeftRadius: 40,
     borderBottomRightRadius: 40,
     alignItems: 'center',
+    justifyContent: 'center'
   },
-  headerRow: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 26,
-    paddingHorizontal: 6,
-  },
-  iconWrapper: {
-    justifyContent: 'center',
+  centeredView: {
     alignItems: 'center',
-    height: 40,
-    width: 40,
-  },
-  liveIndicator: {
-    alignSelf: "flex-end",
-    fontFamily: "Poppins-Bold",
-    borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    fontSize: 13,
+    justifyContent: 'center',
   },
   scoreRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20
   },
   team: {
     alignItems: 'center',
-    marginHorizontal: 20,
+    flex: 1,
   },
   teamLogoWrapper: {
     borderRadius: 27,
@@ -127,10 +105,12 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   tableSection: {
+    width: '100%',
     position: "absolute",
     bottom: 0,
   },
   tableContainer: {
+    width: '100%',
     borderBottomWidth: 0,
     marginBottom: -1,
   },
@@ -146,8 +126,9 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   footer: {
+    width: '100%',
     borderTopWidth: 0,
-    paddingHorizontal: 28,
+    paddingHorizontal: '5%',
     paddingVertical: 20,
   },
   footerText: {

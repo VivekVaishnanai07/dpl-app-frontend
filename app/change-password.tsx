@@ -3,7 +3,7 @@ import { useSnackbar } from "@/context/SnackbarContext";
 import { useTheme } from "@/context/ThemeContext";
 import { changePassword } from "@/services/authService";
 import { decodeJWT, logout } from "@/services/tokenService";
-import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Keyboard,
@@ -18,7 +18,7 @@ import { Button, Dialog, Divider, Portal, TextInput } from "react-native-paper";
 const ChangePasswordScreen = () => {
   const { theme } = useTheme();
   const { showSnackbar } = useSnackbar();
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [secureEntryNew, setSecureEntryNew] = useState(true);
@@ -64,7 +64,7 @@ const ChangePasswordScreen = () => {
         if (data.message.startsWith("✅")) {
           showSnackbar("Password changed successfully!");
           await logout();
-          navigation.navigate("login");
+          router.replace("/login");
         } else {
           setWarningMessage(`❌ ${data.message || "Invalid email or password"}`);
         }

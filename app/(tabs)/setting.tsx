@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { useRouter } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet } from "react-native";
 import { Avatar, List, Switch, Text } from "react-native-paper";
@@ -19,6 +20,7 @@ const SettingsScreen = () => {
   const { user, fetchUserData } = useUser();
   const { showSnackbar } = useSnackbar();
   const navigation = useNavigation<any>();
+  const router = useRouter();
 
   const [notifications, setNotifications] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
@@ -111,7 +113,7 @@ const SettingsScreen = () => {
 
   const logoutHandler = async () => {
     await logout();
-    await handleNavigation('login');
+    router.replace("/login");
   }
 
   return (
