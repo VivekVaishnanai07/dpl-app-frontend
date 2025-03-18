@@ -47,7 +47,7 @@ export const useGlobalLoader = () => {
     if (counter > 0) {
       timer = setTimeout(() => {
         setIsLoading(true);
-      }, 2000); // **Delay of 500ms**
+      }, 500);
     } else {
       setIsLoading(false);
     }
