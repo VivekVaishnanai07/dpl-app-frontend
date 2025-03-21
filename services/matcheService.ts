@@ -29,3 +29,13 @@ export const getMatchesList = async (tournamentId: number) => {
     throw new Error(error.response?.data?.message || "Failed to fetch match");
   }
 };
+
+export const createMatch = async (updateData: any) => {
+  try {
+    const response = await api.post(`/matches/new/add-match`, updateData);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error fetching match:", error);
+    throw new Error(error.response?.data?.message || "Failed to fetch match");
+  }
+};

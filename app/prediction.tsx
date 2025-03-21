@@ -370,6 +370,7 @@ function PredictionScreen() {
       if (defaultTeamId !== null) {
         let prediction = {
           matchId: id,
+          userId: userId,
           predictionId: predictionId,
           teamId: selectedTeam,
           tournamentId: tournamentData.tournamentId,

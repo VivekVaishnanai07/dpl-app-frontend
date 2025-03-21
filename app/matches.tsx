@@ -2,23 +2,20 @@ import Colors from "@/constants/Colors";
 import { useTheme } from "@/context/ThemeContext";
 import { getMatchesList } from "@/services/matcheService";
 import { decodeJWT } from "@/services/tokenService";
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
-import { SegmentedButtons, Text } from "react-native-paper";
+import { AnimatedFAB, SegmentedButtons, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 
 const MatchesScreen = () => {
   const { theme } = useTheme();
+  const navigation = useNavigation<any>();
   const [value, setValue] = useState("all");
+  const [userRole, setUserRole] = useState("");
   const [matches, setMatches] = useState<{ id: string; team1: string; team2: string; status: string; date: string }[]>([]);
-
-  // Team logos mapping (Fix dynamic require issue)
-  const teamLogos: any = {
-    CSK: require("../assets/images/CSK.png"),
-    GT: require("../assets/images/GT.png"),
-  };
 
   // Dummy match data (Replace with API call)
   useEffect(() => {
@@ -26,6 +23,7 @@ const MatchesScreen = () => {
       try {
         const user = (await decodeJWT()) as any;
         if (user && user.tournamentId) {
+          setUserRole(user.role);
           const response = await getMatchesList(user.tournamentId);
           setMatches(response);
         }
@@ -83,7 +81,7 @@ const MatchesScreen = () => {
           keyExtractor={(item: any) => item.id}
           renderItem={({ item, index }: any) => (
             <View style={styles.cardContainer}>
-              <Text style={styles.matchNum}>{index + 1}</Text>
+              <Text style={styles.matchNum}>{item.match_no}</Text>
               <View style={[styles.listItem, { backgroundColor: Colors[theme].secondaryBackground }]}>
                 <View style={styles.itemTopSection}>
                   <Image source={{ uri: item.team1_icon }} style={styles.teamImg} resizeMode="contain" />
@@ -105,6 +103,25 @@ const MatchesScreen = () => {
             </View>
           }
         />
+        {
+          (userRole === "superAdmin" || userRole === "admin") && (
+            <AnimatedFAB
+              icon={'plus'}
+              label={'Create Match'}
+              extended={false}
+              color="#fff"
+              onPress={() => navigation.navigate("create-match")}
+              visible={true}
+              iconMode={'static'}
+              style={{
+                bottom: 16,
+                right: 16,
+                position: 'absolute',
+                backgroundColor: Colors[theme].tabBarIndicator
+              }}
+            />
+          )
+        }
       </View>
     </View >
   );

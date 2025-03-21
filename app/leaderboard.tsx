@@ -5,29 +5,18 @@ import { decodeJWT } from "@/services/tokenService";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import LottieView from "lottie-react-native";
 import React, { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, ImageBackground, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { Tooltip } from "react-native-paper";
 
 const { width, height } = Dimensions.get("window");
 
-type Player = {
-  id: string;
-  avatar: string;
-  current_rank: number;
-  full_name: string;
-  total_points: number;
-  rank_change: string;
-  previous_rank: number;
-  userImg: string;
-  highlighted?: boolean;
-};
-
 const LeaderboardScreen = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<any>();
-  const [leaderboardList, setLeaderboardList] = useState<Player[] | null>(null);
-  const [topThreeData, setTopThreeData] = useState<Player[] | null>(null);
+  const [leaderboardList, setLeaderboardList] = useState<any>(null);
+  const [topThreeData, setTopThreeData] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -134,6 +123,22 @@ const LeaderboardScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       </View>
+      {topThreeData && topThreeData[0].user_id === user.id && (
+        <LottieView
+          source={require("../assets/celebration.json")}
+          speed={0.6}
+          autoPlay
+          loop={false}
+          style={{
+            width: width,
+            height: height,
+            position: "absolute",
+            top: 0,
+            left: 0,
+          }}
+          resizeMode="cover"
+        />
+      )}
     </SafeAreaView >
   );
 };

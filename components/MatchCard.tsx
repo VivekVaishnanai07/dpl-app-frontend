@@ -23,7 +23,6 @@ const MatchCard = ({ match }: any) => {
   const closeMenu = () => setVisible(false);
 
   const handleCountdownComplete = () => {
-    console.log("Countdown finished!");
     setIsMatchFinished(true);
   };
 

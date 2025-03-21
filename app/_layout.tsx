@@ -100,11 +100,11 @@ function RootLayoutInner() {
     registerForPushNotificationsAsync();
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
+      // console.log('Notification received:', notification);
       if (notification && notification.request && notification.request.content) {
-        console.log('Notification title:', notification.request.content.title);
-        console.log('Notification Body:', notification.request.content.body);
-        console.log('Notification Data:', notification.request.content.data);
+        // console.log('Notification title:', notification.request.content.title);
+        // console.log('Notification Body:', notification.request.content.body);
+        // console.log('Notification Data:', notification.request.content.data);
       }
       if (notification.date) {
         fetchNotifications();
@@ -200,6 +200,13 @@ function RootLayoutInner() {
                     header: () => <CustomHeader title="Ramu Kaka" />,
                     animation: "fade",
                   }} />
+                <Stack.Screen
+                  name="create-match"
+                  options={{
+                    header: () => <CustomHeader title="Create Match" />,
+                    animation: "fade",
+                  }}
+                />
                 <Stack.Screen name="+not-found" />
               </Stack>
               <LoadingScreen />

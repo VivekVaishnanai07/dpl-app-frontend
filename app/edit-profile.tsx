@@ -143,7 +143,7 @@ const EditProfileScreen = () => {
           <Text style={styles.role}>{role}</Text>
           <Text style={[styles.labelText, { color: Colors[theme].text }]}>Email Address</Text>
           <TextInput mode='outlined' value={email} disabled style={styles.input} outlineStyle={styles.inputOutline} contentStyle={styles.inputContent} />
-          <Text style={[styles.labelText, { color: Colors[theme].text }]}>First Name"</Text>
+          <Text style={[styles.labelText, { color: Colors[theme].text }]}>First Name</Text>
           <TextInput mode='outlined' value={firstName} onChangeText={setFirstName} style={styles.input} outlineStyle={styles.inputOutline} contentStyle={styles.inputContent} />
           <Text style={[styles.labelText, { color: Colors[theme].text }]}>Last Name</Text>
           <TextInput mode='outlined' value={lastName} onChangeText={setLastName} style={styles.input} outlineStyle={styles.inputOutline} contentStyle={styles.inputContent} />
