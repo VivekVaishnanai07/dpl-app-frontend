@@ -20,9 +20,9 @@ export const getMatchDetails = async (matchId: number) => {
   }
 };
 
-export const getMatchesList = async (tournamentId: number) => {
+export const getMatchesList = async (userId: number, tournamentId: number) => {
   try {
-    const response = await api.get(`/matches/list/${tournamentId}`);
+    const response = await api.get(`/matches/list/${userId}/${tournamentId}`);
     return response.data;
   } catch (error: any) {
     console.error("Error fetching match:", error);

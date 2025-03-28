@@ -190,7 +190,7 @@ const ProfileScreen: React.FC = () => {
                     />
                   )}
                   style={styles.menuItem}
-                  onPress={() => showSnackbar("This feature is coming soon.")}
+                  onPress={() => navigation.navigate("head-to-head")}
                 />
               </View>
             </ScrollView>

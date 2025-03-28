@@ -3,18 +3,21 @@ import { useTheme } from "@/context/ThemeContext";
 import { getMatchesList } from "@/services/matcheService";
 import { decodeJWT } from "@/services/tokenService";
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useState } from "react";
-import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
-import { AnimatedFAB, SegmentedButtons, Text } from "react-native-paper";
+import dayjs from "dayjs";
+import { useEffect, useMemo, useState } from "react";
+import { Dimensions, FlatList, Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { AnimatedFAB, Modal, Portal, SegmentedButtons, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const { width } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 const MatchesScreen = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<any>();
   const [value, setValue] = useState("all");
+  const [matchData, setMatchData] = useState<any>(null);
   const [userRole, setUserRole] = useState("");
+  const [visible, setVisible] = useState(false);
   const [matches, setMatches] = useState<{ id: string; team1: string; team2: string; status: string; date: string }[]>([]);
 
   // Dummy match data (Replace with API call)
@@ -22,34 +25,38 @@ const MatchesScreen = () => {
     const fetchMatches = async () => {
       try {
         const user = (await decodeJWT()) as any;
-        if (user && user.tournamentId) {
-          setUserRole(user.role);
-          const response = await getMatchesList(user.tournamentId);
-          setMatches(response);
-        }
+        if (!user?.tournamentId) throw new Error("Invalid user data");
+
+        setUserRole(user.role);
+        const response = await getMatchesList(user.id, user.tournamentId);
+        setMatches(response);
       } catch (error) {
-        console.error("Error fetching profile details", error);
+        console.error("Failed to fetch matches:", error);
       }
     };
-
     fetchMatches();
   }, []);
 
-  const checkWinnerTeam = (team: any) => {
-    if (team) {
-      return `${team} Won`
-    } else {
-      return `Not Declared Yet`
-    }
-  }
+  const checkWinnerTeam = (team: string | null) => team ? `${team} Won` : "Not Declared Yet";
 
   // Filter matches based on selection
-  const filteredMatches = matches.filter(match => {
-    if (value === "all") return true;
-    const matchDate = new Date(match.date);
-    const currentDate = new Date();
-    return matchDate.getTime() > currentDate.getTime(); // Only future matches
-  });
+  const filteredMatches = useMemo(() => {
+    return matches.filter(match => {
+      if (value === "all") return true;
+      const matchDate = new Date(match.date);
+      return matchDate > new Date(); // Only future matches
+    });
+  }, [matches, value]);
+
+  const showModal = (item: any) => {
+    setVisible(true);
+    setMatchData(item);
+  };
+
+  const hideModal = () => {
+    setMatchData(null);
+    setVisible(false);
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: Colors[theme].tabBarIndicator }]}>
@@ -80,7 +87,7 @@ const MatchesScreen = () => {
           data={filteredMatches}
           keyExtractor={(item: any) => item.id}
           renderItem={({ item, index }: any) => (
-            <View style={styles.cardContainer}>
+            <TouchableOpacity style={styles.cardContainer} onPress={() => showModal(item)}>
               <Text style={styles.matchNum}>{item.match_no}</Text>
               <View style={[styles.listItem, { backgroundColor: Colors[theme].secondaryBackground }]}>
                 <View style={styles.itemTopSection}>
@@ -94,7 +101,7 @@ const MatchesScreen = () => {
                   </Text>
                 </View>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           contentContainerStyle={{ paddingBottom: 20 }}
           ListEmptyComponent={
@@ -113,13 +120,34 @@ const MatchesScreen = () => {
               onPress={() => navigation.navigate("create-match")}
               visible={true}
               iconMode={'static'}
-              style={{
-                bottom: 16,
-                right: 16,
-                position: 'absolute',
-                backgroundColor: Colors[theme].tabBarIndicator
-              }}
+              style={[styles.fab, { backgroundColor: Colors[theme].tabBarIndicator }]}
             />
+          )
+        }
+        {
+          matchData && (
+            <Portal>
+              <Modal visible={visible} onDismiss={hideModal}>
+                <View style={[styles.matchDetailsModal, { backgroundColor: Colors[theme].secondaryBackground }]}>
+                  <Text style={styles.headerTitleText}>Match Details</Text>
+                  <View style={styles.matchDetailsTopSection}>
+                    <Image source={{ uri: matchData.team1_icon }} style={styles.matchDetailsIcon} resizeMode="contain" />
+                    <Image source={theme === "light" ? require("../assets/images/vs5.png") : require("../assets/images/vs2.png")} style={styles.matchDetailsVsIcon} resizeMode="contain" />
+                    <Image source={{ uri: matchData.team2_icon }} style={styles.matchDetailsIcon} resizeMode="contain" />
+                  </View>
+                  <Text style={{ fontFamily: "Poppins-Regular", fontSize: 16, alignSelf: "center", marginTop: 10 }}>{matchData.venue}</Text>
+                  <Text style={{ fontFamily: "Poppins-Regular", fontSize: 16, alignSelf: "center", marginVertical: 10 }}>{dayjs(matchData.date).format('MMM D, YYYY h:mm A')}</Text>
+                  <View style={styles.matchDetailsFooterSection}>
+                    <Text style={[styles.statusText, theme === "light" ? (matchData.win_team ? styles.WonStatusColor : styles.notDeclaredStatusColor) : { color: "#fff" }]}>
+                      Win Team:- {matchData.win_team ? matchData.win_team : "?"}
+                    </Text>
+                    <Text style={[styles.statusText, theme === "light" ? (matchData.win_team ? styles.WonStatusColor : styles.notDeclaredStatusColor) : { color: "#fff" }]}>
+                      Predict Team:- {matchData.predict_team ? matchData.predict_team : "?"}
+                    </Text>
+                  </View>
+                </View>
+              </Modal>
+            </Portal>
           )
         }
       </View>
@@ -164,10 +192,6 @@ const styles = StyleSheet.create({
     width: "80%",
     maxWidth: 400,
     alignSelf: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
   },
   itemTopSection: {
     width: "100%",
@@ -212,6 +236,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Poppins-Regular",
     alignSelf: "center"
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
+  matchDetailsModal: {
+    marginHorizontal: 20,
+    borderRadius: 26,
+    padding: 16
+  },
+  headerTitleText: {
+    fontSize: 20,
+    fontFamily: "Poppins-SemiBold",
+    alignSelf: "center",
+  },
+  matchDetailsIcon: {
+    width: width * 0.19,
+    height: height * 0.10,
+  },
+  matchDetailsVsIcon: {
+    width: width * 0.13,
+    height: height * 0.09,
+  },
+  matchDetailsTopSection: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    justifyContent: "space-between",
+  },
+  matchDetailsFooterSection: {
+    borderTopWidth: 0.6,
+    borderTopColor: "lightgrey",
+    width: "100%",
+    alignSelf: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingTop: 8
   }
 });
 

@@ -228,6 +228,16 @@ function PredictionScreen() {
     };
   }, []);
 
+  useEffect(() => {
+    if (matchData && selectedTeam !== null && matchEnded) {
+      if (matchData.winner_team !== null) {
+        setWinTeam(matchData.winner_team === selectedTeam);
+      } else {
+        setWinTeam(null);
+      }
+    }
+  }, [matchData, selectedTeam, matchEnded]);
+
   const fetchMatchData = async () => {
     try {
       const response = await getMatchDetails(id);
@@ -238,15 +248,6 @@ function PredictionScreen() {
 
         if (now.isAfter(matchTime)) {
           setMatchEnded(true);
-          if (response.winner_team !== null) {
-            if (response.winner_team === selectedTeam) {
-              setWinTeam(true); // User wins
-            } else {
-              setWinTeam(false); // User loses
-            }
-          } else {
-            setWinTeam(null);
-          }
         }
       }
     } catch (error) {

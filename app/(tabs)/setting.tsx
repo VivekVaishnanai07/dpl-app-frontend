@@ -125,7 +125,7 @@ const SettingsScreen = () => {
         description="View Profile"
         titleStyle={[styles.listItemTitle, { color: textColor }]}
         descriptionStyle={{ color: textColor }}
-        left={() => <Avatar.Image size={55} source={{ uri: user.appUserImg }} />}
+        left={() => <Avatar.Image size={55} source={{ uri: user.userImg }} />}
         right={() => <List.Icon icon="chevron-right" color={textColor} />}
         onPress={() => handleNavigation("view-profile", { userId: user.id })}
         style={[styles.listItem, { backgroundColor: cardColor }]}

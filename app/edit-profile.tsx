@@ -32,7 +32,7 @@ const EditProfileScreen = () => {
       setFirstName(user.first_name);
       setLastName(user.last_name);
       setRole(user.role);
-      setProfileImage(user.appUserImg);
+      setProfileImage(user.userImg);
       setOriginalData(user);
     }
   }, [user]);
@@ -47,7 +47,7 @@ const EditProfileScreen = () => {
       setFirstName(userDetails.first_name);
       setLastName(userDetails.last_name);
       setRole(userDetails.role);
-      setProfileImage(userDetails.appUserImg);
+      setProfileImage(userDetails.userImg);
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
