@@ -170,6 +170,9 @@ function PredictionScreen() {
             setAwayTeamUsers(team2Users);
             setHomeTeamCount(team1Users.length);
             setAwayTeamCount(team2Users.length);
+            if (team1Users.length === 0 && team2Users.length === 0 && selectedTeam) {
+              selectedTeamHandler(selectedTeam);
+            }
           }
         } catch (error) {
           console.error("Error fetching predicted users:", error);
@@ -177,7 +180,7 @@ function PredictionScreen() {
       };
       fetchData();
     }
-  }, [id, tournamentData, matchData]);
+  }, [id, tournamentData, matchData, selectedTeam]);
 
   useEffect(() => {
     const animation = withRepeat(
